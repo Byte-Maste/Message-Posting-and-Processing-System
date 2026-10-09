@@ -63,9 +63,9 @@ public class UserDAO {
     }
 
     // get the user details is valid or not during login
-    public boolean validateUser(String username, String password) {
+    public int validateUser(String username, String password) {
         //check existing user or not
-        String sql = "SELECT * FROM users where username =? and password = ?";
+        String sql = "SELECT id FROM users where username =? and password = ?";
 
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setString(1, username);
@@ -73,9 +73,9 @@ public class UserDAO {
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return rs.getString(1) != null;
+                return rs.getInt(1) ;
             } else {
-                return false;
+                return 0;
             }
 
         } catch (SQLException e) {

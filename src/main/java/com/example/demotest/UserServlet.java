@@ -8,19 +8,26 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 @WebServlet("/application/*")
 public class UserServlet extends HttpServlet {
+    private Logger logger = Logger.getLogger(UserServlet.class.getName());
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        logger.info("Receivied the post request in login");
         doGet(req, resp);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        logger.info("Receivied the get request in login as called");
 
         UserDAO dao = new UserDAO();
         String path = req.getPathInfo();
+
+        logger.info(path);
+
 
         System.out.println(path + "------------");
 
@@ -32,18 +39,21 @@ public class UserServlet extends HttpServlet {
         String[] paths = path.split("/");
 
         System.out.println(paths[1] + "---------");
+
+        logger.info("path index 1 value " + paths[1] );
         if (paths[1].equals("login")) {
             String username = req.getParameter("username");
             String password = req.getParameter("password");
 
-            if (dao.validateUser(username, password)) {
+            int user_id = dao.validateUser(username, password);
+            if (user_id!=0) {
                 //login successfully
                 HttpSession session = req.getSession(true);
 
                 // Synchronized session key name with MessageServlet
                 session.setAttribute("username", username);
                 session.setAttribute("Name", username);
-                session.setAttribute("user_id", dao.getUserID(username));
+                session.setAttribute("user_id", user_id);
 
                 resp.sendRedirect(req.getContextPath() + "/message.jsp");
             } else {

@@ -11,6 +11,13 @@
     <title>Title</title>
   </head>
   <body>
-  
+  <body>
+       <form action="${pageContext.request.contextPath}/application/register" method="post" >
+            <label>Name:</label>
+            <input type="text" name="username"><br><br>
+            <label>Password</label>
+            <input type="text" name="password"><br><br>
+            <button type="submit">Submit</button>
+       </form>
   </body>
 </html>

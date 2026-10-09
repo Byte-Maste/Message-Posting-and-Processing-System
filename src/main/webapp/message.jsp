@@ -11,6 +11,14 @@
     <title>Message Dashboard</title>
   </head>
   <body>
-  
+     <form action="${pageContext.request.contextPath}/message" method="post" >
+     <label>UserContent</label>
+     <input type="text" name="Content"><br><br>
+     <label>Type</label>
+     <input type="text" name="Type">
+     <label>Priority</label>
+     <input type="text" name="priority">
+     <button type="submit">Submit</button>
+     </form>
   </body>
 </html>

@@ -1,5 +1,7 @@
 package com.example.demotest;
 
+import java.sql.Timestamp;
+
 public class MessageModel {
 
     private int msg_id;
@@ -8,30 +10,38 @@ public class MessageModel {
     private String Type;
     private boolean priority;
 
+
+
     //when it len is <20kb = 1024 * 20
-    private String payload;
+    private boolean isPayload ;
     //when content lenght getBytes() use it and
     // <100kb = 100 * 1024
     private String path;
     //>100kb then "Size limit reached"
     private String status;
 
-    private String tableName;
 
-    MessageModel(int msg_id, int user_id, String Content, String Type, boolean priority, String payload, String path, String tableName) {
+
+    private Timestamp postTime;
+
+    MessageModel(int msg_id, int user_id, String Content, String Type, boolean priority, boolean isPayload , String path , Timestamp postTime) {
         this.msg_id = msg_id;
         this.user_id = user_id;
         this.Content = Content;
         this.Type = Type;
         this.priority = priority;
-        this.payload = payload;
+        this.isPayload  = isPayload ;
         this.path = path;
         this.status = null;
-        this.tableName = tableName;
+        this.postTime = postTime;
     }
 
-    public String getTableName() {
-        return tableName;
+    public boolean isPayload() {
+        return isPayload;
+    }
+
+    public Timestamp getPostTime() {
+        return postTime;
     }
 
     public int getMsg_id() {
@@ -46,8 +56,8 @@ public class MessageModel {
         return path;
     }
 
-    public String getPayload() {
-        return payload;
+    public boolean getPayload() {
+        return isPayload ;
     }
 
     public boolean isPriority() {

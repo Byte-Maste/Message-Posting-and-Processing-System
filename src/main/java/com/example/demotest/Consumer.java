@@ -5,15 +5,20 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.logging.Logger;
 
 public class Consumer implements Runnable {
-    private ThreadPoolExecutor workerpool;
+    private String subtable;
     private MessageDAO messageDAO;
     private static Logger logger = Logger.getLogger(Consumer.class.getName());
 
-    Consumer(ThreadPoolExecutor workerpool, MessageDAO messageDAO) {
-        this.workerpool = workerpool;
+    private volatile boolean running = true;
+    Consumer(String subtable, MessageDAO messageDAO) {
+        this.subtable = subtable;
         this.messageDAO = messageDAO;
     }
 
+    public void stopWorker()
+    {
+        this.running = false;
+    }
     @Override
     public void run() {
         // this cheduler is responsible to take the first row from each table and each thread will execute that particular table
@@ -22,15 +27,22 @@ public class Consumer implements Runnable {
 
         // to make it dynamic
 
-        List<String> subtables = List.of("INFO1", "INFO2", "WARN1", "WARN2");
-
-        for (String subtable : subtables) {
-            // Process row atomically with FOR UPDATE and transaction safety
-            boolean processed = messageDAO.processNextSubtableMessage(subtable);
+        while (running) {
+            boolean processed = messageDAO.processSubtableMessage(subtable);
 
             if (processed) {
                 logger.info("Message Has been inserted into messsage processor table and deleted from the subtable: " + subtable);
             }
+
+            if(!processed)
+            {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
+
     }
 }
